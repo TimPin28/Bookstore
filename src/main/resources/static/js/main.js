@@ -1,39 +1,21 @@
-const books = [
-    {
-        id: 1,
-        title: "Clean Code",
-        author: "Robert C. Martin",
-        price: 29.99,
-        category: "Programming"
-    },
-    {
-        id: 2,
-        title: "Effective Java",
-        author: "Joshua Bloch",
-        price: 39.99,
-        category: "Programming"
-    },
-    {
-        id: 3,
-        title: "Atomic Habits",
-        author: "James Clear",
-        price: 19.99,
-        category: "Self-Help"
-    }
-];
-
 const bookGrid = document.getElementById("bookGrid");
 const searchInput = document.getElementById("searchInput");
 
-function renderBooks(bookList) {
+async function loadBooks() {
+    const response = await fetch("/api/books");
+    const books = await response.json();
+    renderBooks(books);
+}
+
+function renderBooks(books) {
     bookGrid.innerHTML = "";
 
-    if (bookList.length === 0) {
+    if (books.length === 0) {
         bookGrid.innerHTML = "<p>No books found.</p>";
         return;
     }
 
-    bookList.forEach(book => {
+    books.forEach(book => {
         const card = document.createElement("div");
         card.className = "book-card";
 
@@ -42,6 +24,7 @@ function renderBooks(bookList) {
             <p><strong>Author:</strong> ${book.author}</p>
             <p><strong>Category:</strong> ${book.category}</p>
             <p><strong>Price:</strong> $${book.price}</p>
+            <p><strong>Description:</strong>$${book.description}</p>
             <button>Add to Cart</button>
         `;
 
@@ -49,17 +32,19 @@ function renderBooks(bookList) {
     });
 }
 
-// Search functionality
-searchInput.addEventListener("input", () => {
-    const keyword = searchInput.value.toLowerCase();
+// Search using backend
+searchInput.addEventListener("input", async () => {
+    const keyword = searchInput.value.trim();
 
-    const filteredBooks = books.filter(book =>
-        book.title.toLowerCase().includes(keyword) ||
-        book.author.toLowerCase().includes(keyword)
-    );
+    if (keyword === "") {
+        loadBooks();
+        return;
+    }
 
-    renderBooks(filteredBooks);
+    const response = await fetch(`/api/books/search?keyword=${keyword}`);
+    const books = await response.json();
+    renderBooks(books);
 });
 
-// Initial render
-renderBooks(books);
+// Initial load
+loadBooks();
