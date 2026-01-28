@@ -22,6 +22,9 @@ public class Book {
 
     private String author;
 
+    @Column(length = 2000)
+    private String description;
+
     private BigDecimal price;
     private String category;
     private int stock;
