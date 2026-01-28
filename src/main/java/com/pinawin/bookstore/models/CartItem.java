@@ -1,9 +1,13 @@
 package com.pinawin.bookstore.models;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "cart_items")
+@Getter
+@Setter
 public class CartItem {
 
     @Id

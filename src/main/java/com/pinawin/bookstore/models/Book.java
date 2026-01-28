@@ -2,12 +2,16 @@ package com.pinawin.bookstore.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
 @Table(name = "books")
+@Getter
+@Setter
 public class Book {
 
     @Id
@@ -15,10 +19,8 @@ public class Book {
     private Long id;
 
     private String title;
-    private String author;
 
-    @Column(length = 2000)
-    private String description;
+    private String author;
 
     private BigDecimal price;
     private String category;
