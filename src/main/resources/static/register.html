@@ -1,0 +1,29 @@
+<form id="registerForm">
+    <input type="text" id="name" placeholder="Name" required />
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <button type="submit">Register</button>
+</form>
+
+<script>
+    document.getElementById("registerForm").addEventListener("submit", async e => {
+        e.preventDefault();
+
+        const response = await fetch("/api/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: name.value,
+                email: email.value,
+                password: password.value
+            })
+        });
+
+        if (response.ok) {
+            alert("Registration successful!");
+            window.location.href = "login.html";
+        } else {
+            alert("Registration failed");
+        }
+    });
+</script>
