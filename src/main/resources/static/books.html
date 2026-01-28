@@ -13,22 +13,12 @@
 </header>
 
 <main>
-    <input type="text" placeholder="Search books...">
+    <input id="searchInput" type="text" placeholder="Search books...">
 
-    <div class="book-grid">
-        <div class="book-card">
-            <h3>Clean Code</h3>
-            <p>Robert C. Martin</p>
-            <p>$29.99</p>
-        </div>
-
-        <div class="book-card">
-            <h3>Effective Java</h3>
-            <p>Joshua Bloch</p>
-            <p>$39.99</p>
-        </div>
-    </div>
+    <!-- JS will inject books here -->
+    <div id="bookGrid" class="book-grid"></div>
 </main>
 
+<script src="js/main.js"></script>
 </body>
 </html>
