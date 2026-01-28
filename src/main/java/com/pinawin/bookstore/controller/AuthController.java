@@ -1,5 +1,7 @@
 package com.pinawin.bookstore.controller;
 
+import com.pinawin.bookstore.DTO.LoginRequest;
+import com.pinawin.bookstore.DTO.RegisterRequest;
 import com.pinawin.bookstore.models.User;
 import com.pinawin.bookstore.services.UserService;
 import org.springframework.web.bind.annotation.*;
