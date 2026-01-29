@@ -70,3 +70,67 @@ main {
     background: #fff;
     box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
 }
+
+/* Shopping Cart Container */
+#cartContainer {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+/* Table Styling */
+#cartTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+#cartTable th {
+    background-color: #f8f9fa;
+    text-align: left;
+    padding: 12px;
+    border-bottom: 2px solid #dee2e6;
+    color: #495057;
+}
+
+#cartTable td {
+    padding: 15px 12px;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
+/* Hover effect for rows */
+#cartTable tbody tr:hover {
+    background-color: #f1f3f5;
+}
+
+/* Total Section */
+#cartTotal {
+    text-align: right;
+    padding-top: 20px;
+    border-top: 2px solid #343a40;
+}
+
+#cartTotal h3 {
+    font-size: 1.5rem;
+    color: #212529;
+}
+
+#totalPrice {
+    color: #28a745; /* Green for the total price */
+    font-weight: bold;
+}
+
+/* Back Button Styling */
+header a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 500;
+}
+
+header a:hover {
+    text-decoration: underline;
+}

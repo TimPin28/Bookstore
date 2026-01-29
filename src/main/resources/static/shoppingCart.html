@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Shopping Cart</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header>
+    <h1>Your Shopping Cart</h1>
+    <a href="books.html">⬅ Back to Books</a>
+</header>
+
+<main>
+    <div id="cartContainer">
+        <table id="cartTable">
+            <thead>
+            <tr>
+                <th>Book</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+            </tr>
+            </thead>
+            <tbody id="cartBody">
+            </tbody>
+        </table>
+        <div id="cartTotal">
+            <h3>Total: $<span id="totalPrice">0.00</span></h3>
+        </div>
+    </div>
+</main>
+
+<script src="js/cart.js"></script>
+</body>
+</html>
