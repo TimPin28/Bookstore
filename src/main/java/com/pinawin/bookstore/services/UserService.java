@@ -31,7 +31,7 @@ public class UserService {
     }
 
     public User login(String userName, String password) {
-        User user = userRepository.findByUsername(userName)
+        User user = userRepository.findByuserName(userName)
                 .orElseThrow(() -> new RuntimeException("Invalid credentials"));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
