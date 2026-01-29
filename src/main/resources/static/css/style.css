@@ -13,10 +13,29 @@ header {
     align-items: center;
 }
 
-nav a {
-    color: white;
-    margin-left: 15px;
+nav {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    padding: 10px 0;
+}
+
+nav a, nav button {
     text-decoration: none;
+    color: white;
+    font-weight: 500;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+nav a:hover, nav button:hover {
+    color: #007bff;
+}
+
+#nav-logout {
+    color: #dc3545; /* Red for logout */
 }
 
 .hero {
