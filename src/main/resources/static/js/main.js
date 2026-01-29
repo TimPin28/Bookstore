@@ -4,8 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById("searchInput");
     const categoryInput = document.getElementById("categoryInput");
 
-    console.log(categoryInput);
-
     // --- 1. Initial Load ---
     loadBooks();
 
@@ -28,8 +26,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 <p><strong>Category:</strong> ${book.category}</p>
                 <p><strong>Price:</strong> $${Number(book.price).toFixed(2)}</p>
                 <p><strong>Description:</strong> ${book.description || 'No description available.'}</p>
-                <button>Add to Cart</button>
+                <button class="add-to-cart-btn">Add to Cart</button>
             `;
+
+            // Find the button inside the card
+            const btn = card.querySelector(".add-to-cart-btn");
+
+            // Attach the listener directly
+            btn.addEventListener("click", () => addToCart(book.id));
             bookGrid.appendChild(card);
         });
     }
@@ -87,4 +91,22 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Fetch error for category:", error);
         }
     });
+
+    // --- 6. Button: Add To Cart ---
+    async function addToCart(bookId) {
+        const response = await fetch(`/api/cart/add?bookId=${bookId}`, {
+            method: "POST",
+            credentials: "include"
+        });
+
+        if (response.ok) {
+            alert("Added to cart!");
+        } else if (response.status === 401 || response.status === 403) {
+            alert("Please login first");
+            window.location.href = "login.html";
+        } else {
+            alert("Failed to add to cart");
+        }
+    }
+
 });
