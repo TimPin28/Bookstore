@@ -30,7 +30,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 credentials: "include"
             });
             if (res.ok) {
+                alert("Logged out successfully!");
                 window.location.href = "index.html";
+            } else {
+                alert("Logout failed. Please try again.");
             }
         });
     }

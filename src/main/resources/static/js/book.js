@@ -1,6 +1,5 @@
 // Wait for the HTML to be fully loaded before running the script
 document.addEventListener("DOMContentLoaded", () => {
-    const logoutBtn = document.getElementById("logoutBtn");
     const bookGrid = document.getElementById("bookGrid");
     const searchInput = document.getElementById("searchInput");
     const categoryInput = document.getElementById("categoryInput");
@@ -110,25 +109,4 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Failed to add to cart");
         }
     }
-
-    // --- 7. Button: Logout ---
-    logoutBtn.addEventListener("click", async () => {
-        console.log("Logout button clicked!");
-        try {
-            // We use POST because Spring Security logout defaults to POST
-            const response = await fetch("/api/auth/logout", {
-                method: "POST",
-                credentials: "include"
-            });
-
-            if (response.ok) {
-                alert("Logged out successfully!");
-                window.location.href = "index.html";
-            } else {
-                alert("Logout failed. Please try again.");
-            }
-        } catch (error) {
-            console.error("Error during logout:", error);
-        }
-    });
 });
