@@ -22,5 +22,10 @@ public class BookService {
     public List<Book> searchBooks(String keyword) {
         return bookRepository.findByTitleContainingIgnoreCase(keyword);
     }
+
+    public List<Book> filterByCategory(String category) {
+        return bookRepository.findByCategoryContainingIgnoreCase(category);
+    }
+
 }
 
