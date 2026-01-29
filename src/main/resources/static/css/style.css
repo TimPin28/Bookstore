@@ -34,7 +34,7 @@ nav a:hover, nav button:hover {
     color: #007bff;
 }
 
-#nav-logout {
+#logoutBtn {
     color: #dc3545; /* Red for logout */
 }
 
