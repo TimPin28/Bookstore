@@ -19,12 +19,15 @@ public class AuthController {
 
     @PostMapping("/register")
     public User register(@RequestBody RegisterRequest request) {
+        System.out.println("Name: " + request.getUserName());
+        System.out.println("Email: " + request.getEmail());
         return userService.register(
-                request.getName(),
+                request.getUserName(),
                 request.getEmail(),
                 request.getPassword()
         );
     }
+
 
     @PostMapping("/login")
     public User login(@RequestBody LoginRequest request) {

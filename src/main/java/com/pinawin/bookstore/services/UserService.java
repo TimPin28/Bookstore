@@ -23,7 +23,7 @@ public class UserService {
         }
 
         User user = new User();
-        user.setName(name);
+        user.setUserName(name);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
 
