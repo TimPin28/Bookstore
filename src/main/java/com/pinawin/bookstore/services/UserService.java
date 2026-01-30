@@ -21,6 +21,9 @@ public class UserService {
         if (userRepository.findByEmail(email).isPresent()) {
             throw new RuntimeException("Email already registered");
         }
+        if (userRepository.findByuserName(name).isPresent()) {
+            throw new RuntimeException("UserName already registered");
+        }
 
         User user = new User();
         user.setUserName(name);
