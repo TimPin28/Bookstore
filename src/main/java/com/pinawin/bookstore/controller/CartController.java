@@ -32,7 +32,7 @@ public class CartController {
         }
 
         try {
-            // 2. Cast the principal to your User model
+            // 2. Cast the principal to User model
             User user = (User) authentication.getPrincipal();
             CartItem savedItem = cartService.addToCart(user, bookId);
             return ResponseEntity.ok(savedItem);
