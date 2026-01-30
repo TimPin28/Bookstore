@@ -43,4 +43,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         totalPriceSpan.textContent = grandTotal.toFixed(2);
     }
+
+    document.getElementById("checkoutBtn").addEventListener("click", async () => {
+
+        const response = await fetch("/api/checkout", {
+            method: "POST",
+            credentials: "include"
+        });
+
+        if (response.ok) {
+            alert("Order placed successfully!");
+            window.location.href = "index.html"; // later
+        } else {
+            alert("Checkout failed");
+        }
+    });
+
 });
