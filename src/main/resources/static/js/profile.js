@@ -20,20 +20,23 @@ async function loadOrders() {
 
     orders.forEach(order => {
         const div = document.createElement("div");
+        div.className = "order-card"; // class for styling
 
         div.innerHTML = `
-        <h3>Order #${order.orderId}</h3>
-        <span class="order-status ${order.status}">
-            ${order.status}
-        </span>
-        <p>Total: $${order.totalAmount}</p>
-        <ul>
+        <div class="order-header">
+            <h3>Order #${order.orderId}</h3>
+            <span class="order-status ${order.status}">
+                ${order.status}
+            </span>
+        </div>
+        <ul class="order-items">
             ${order.items.map(item => `
                 <li>
-                    ${item.bookTitle} × ${item.quantity}
+                    <span>${item.bookTitle} × ${item.quantity}</span>
                 </li>
             `).join("")}
         </ul>
+        <p class="order-total">Total: $${order.totalAmount.toFixed(2)}</p>
     `;
 
         container.appendChild(div);
