@@ -1,28 +1,30 @@
-<form id="loginForm">
-    <input type="text" id="userName" placeholder="UserName" required />
-    <input type="password" id="password" placeholder="Password" required />
-    <button type="submit">Login</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Bookstore</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-page">
+<div class="auth-container">
+    <h2>Welcome Back</h2>
+    <p>Please enter your credentials to continue.</p>
+    <form id="loginForm">
+        <div class="form-group">
+            <label for="userName">Username</label>
+            <input type="text" id="userName" required placeholder="Enter your username">
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" required placeholder="Enter your password">
+        </div>
+        <button type="submit" class="auth-btn">Login</button>
+    </form>
+    <p class="auth-footer">Don't have an account? <a href="register.html">Register here</a></p>
+</div>
 
-<script>
-    document.getElementById("loginForm").addEventListener("submit", async e => {
-        e.preventDefault();
+<script src="js/login.js"></script>
 
-        const response = await fetch("/api/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({
-                userName: userName.value,
-                password: password.value
-            })
-        });
+</body>
+</html>
 
-        if (response.ok) {
-            alert("Login successful!");
-            window.location.href = "books.html";
-        } else {
-            alert("Invalid credentials");
-        }
-    });
-</script>
