@@ -68,6 +68,7 @@ public class CheckoutService {
         }
 
         order.setTotalAmount(total);
+        order.setStatus(OrderStatus.PLACED);
 
         Order savedOrder = orderRepository.save(order);
 

@@ -23,6 +23,9 @@ async function loadOrders() {
 
         div.innerHTML = `
         <h3>Order #${order.orderId}</h3>
+        <span class="order-status ${order.status}">
+            ${order.status}
+        </span>
         <p>Total: $${order.totalAmount}</p>
         <ul>
             ${order.items.map(item => `

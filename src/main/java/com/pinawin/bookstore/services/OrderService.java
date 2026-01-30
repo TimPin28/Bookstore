@@ -23,6 +23,7 @@ public class OrderService {
         return orderRepository.findByUser(user).stream()
                 .map(order -> new OrderResponse(
                         order.getId(),
+                        order.getStatus().name(),
                         order.getTotalAmount(),
                         order.getOrderItems().stream()
                                 .map(item -> new OrderItemResponse(

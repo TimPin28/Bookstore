@@ -245,3 +245,16 @@ header a:hover {
 .auth-footer a:hover {
     text-decoration: underline;
 }
+
+.order-status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.order-status.PLACED { background: #3498db; color: white; }
+.order-status.PAID { background: #2ecc71; color: white; }
+.order-status.SHIPPED { background: #9b59b6; color: white; }
+.order-status.CANCELLED { background: #e74c3c; color: white; }
