@@ -36,7 +36,5 @@ public class Book {
     @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<CartItem> cartItems;
-
-    // getters & setters
 }
 
