@@ -1,4 +1,7 @@
-// Wait for the HTML to be fully loaded before running the script
+/**
+ * Book Catalog Controller
+ * Handles fetching the book list, searching, and filtering by category.
+ */
 document.addEventListener("DOMContentLoaded", () => {
     const bookGrid = document.getElementById("bookGrid");
     const searchInput = document.getElementById("searchInput");
@@ -6,11 +9,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // --- 1. Initial Load ---
+    // Automatically populates the grid with all available books on page load.
     loadBooks();
 
-    // --- 2. Helper: Render Books to UI ---
+    /**
+     * --- 2. Helper: Render Books to UI ---
+     * Dynamically builds the HTML grid from a book array.
+     * @param {Array} books - The array of book objects from the API.
+     */
     function renderBooks(books) {
-        bookGrid.innerHTML = "";
+        // Clear grid before rendering new items
+        bookGrid.innerHTML = ""; 
 
         if (books.length === 0) {
             bookGrid.innerHTML = "<p>No books found.</p>";
@@ -21,6 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const card = document.createElement("div");
             card.className = "book-card";
 
+            // Template literal for book details
             card.innerHTML = `
                 <h3>${book.title}</h3>
                 <p><strong>Author:</strong> ${book.author}</p>
@@ -39,7 +49,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- 3. API Call: Get All Books ---
+    /**
+     * --- 3. API Call: Get All Books ---
+     * Standard fetch to retrieve the full catalog.
+     */
     async function loadBooks() {
         try {
             const response = await fetch("/api/books");
@@ -50,11 +63,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // --- 4. Event Listener: Title Search ---
+    /**
+     * --- 4. Event Listener: Title Search ---
+     * Triggers as the user types (real-time).
+     */
     searchInput.addEventListener("input", async () => {
         const keyword = searchInput.value.trim();
 
         if (keyword === "") {
+            // Revert to full list if input is cleared
             loadBooks();
             return;
         }
@@ -68,17 +85,21 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // --- 5. Event Listener: Category Search ---
+    /**
+     * --- 5. Event Listener: Category Search ---
+     * Filters books based on the category input value.
+     */
     categoryInput.addEventListener("input", async () => {
         const categoryValue = categoryInput.value.trim();
 
         if (categoryValue === "") {
+            // Revert to full list if input is cleared
             loadBooks();
             return;
         }
 
         try {
-            // Ensure the parameter name 'category' matches your @RequestParam in BookController
+            // Ensure the parameter name 'category' matches @RequestParam in BookController
             const response = await fetch(`/api/books/category?category=${encodeURIComponent(categoryValue)}`);
 
             if (response.ok) {
@@ -93,10 +114,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // --- 6. Button: Add To Cart ---
+    /**
+     * --- 6. Button: Add To Cart ---
+     * Communicates with CartController.
+     * @param {number} bookId - ID of the selected book.
+     */
     async function addToCart(bookId) {
         const response = await fetch(`/api/cart/add?bookId=${bookId}`, {
             method: "POST",
+            // Passes the JSESSIONID cookie for authentication
             credentials: "include"
         });
 

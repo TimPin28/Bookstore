@@ -1,16 +1,27 @@
+/**
+ * Shopping Cart & Checkout Controller
+ * Manages the retrieval of cart data, real-time total calculations, 
+ * and the final checkout transaction.
+ */
 document.addEventListener("DOMContentLoaded", async () => {
     const cartBody = document.getElementById("cartBody");
     const totalPriceSpan = document.getElementById("totalPrice");
 
+    /**
+     * 1. Initial Cart Retrieval
+     * Fetches the current user's cart items from the backend on page load.
+     */
     try {
+        // Explicitly include session cookies (JSESSIONID) to identify the user
         const response = await fetch("/api/cart", {
-            credentials: "include" // Important to send the session cookie!
+            credentials: "include"
         });
 
         if (response.ok) {
             const items = await response.json();
             renderCart(items);
         } else if (response.status === 401) {
+            // Redirect to login if the user session has expired or is missing
             alert("Please login to view your cart");
             window.location.href = "login.html";
         }
@@ -18,7 +29,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error("Error fetching cart:", error);
     }
 
+    /**
+     * 2. UI Rendering Logic
+     * Dynamically builds the cart table and calculates financial totals.
+     * @param {Array} items - List of cart items containing book details and quantities.
+     */
     function renderCart(items) {
+        // Prevent duplicate rows on re-render
         cartBody.innerHTML = "";
         let grandTotal = 0;
 
@@ -28,6 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         items.forEach(item => {
+            // Calculate subtotal for the specific line item
             const subtotal = item.book.price * item.quantity;
             grandTotal += subtotal;
 
@@ -41,11 +59,17 @@ document.addEventListener("DOMContentLoaded", async () => {
             cartBody.appendChild(row);
         });
 
+        // Update the grand total in the UI
         totalPriceSpan.textContent = grandTotal.toFixed(2);
     }
 
+    /**
+     * 3. Checkout Execution
+     * Attaches an event listener to trigger the conversion of the cart into an Order.
+     */
     document.getElementById("checkoutBtn").addEventListener("click", async () => {
 
+        // Trigger the POST request to the checkout endpoint
         const response = await fetch("/api/checkout", {
             method: "POST",
             credentials: "include"
@@ -53,8 +77,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (response.ok) {
             alert("Order placed successfully!");
-            window.location.href = "index.html"; // later
+
+            // Redirect to index or profile after a successful transaction
+            window.location.href = "index.html"; 
         } else {
+            
+            // Handle failures (e.g., insufficient stock or empty cart)
             alert("Checkout failed");
         }
     });
