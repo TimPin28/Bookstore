@@ -2,7 +2,6 @@ package com.pinawin.bookstore.services;
 
 import com.pinawin.bookstore.DTO.OrderItemResponse;
 import com.pinawin.bookstore.DTO.OrderResponse;
-import com.pinawin.bookstore.models.Order;
 import com.pinawin.bookstore.models.User;
 import com.pinawin.bookstore.repositories.OrderRepository;
 import org.springframework.stereotype.Service;
