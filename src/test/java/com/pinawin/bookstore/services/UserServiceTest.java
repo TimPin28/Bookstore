@@ -72,40 +72,5 @@ class UserServiceTest {
                 )
         );
     }
-
-    // Simulate a successful log-in
-    @Test
-    void login_successful() {
-        // Arrange
-        User mockUser = new User();
-        mockUser.setUserName("testUser");
-        mockUser.setPassword("hashedPassword");
-
-        when(userRepository.findByuserName("testUser"))
-                .thenReturn(Optional.of(mockUser));
-        when(passwordEncoder.matches("rawPassword", "hashedPassword"))
-                .thenReturn(true);
-
-        // Act
-        User result = userService.login("testUser", "rawPassword");
-
-        // Assert
-        assertEquals("testUser", result.getUsername());
-    }
-
-    // Simulate password mismatch
-    @Test
-    void login_invalidCredentials_throwsException() {
-        User mockUser = new User();
-        mockUser.setPassword("hashedPassword");
-
-        when(userRepository.findByuserName("testUser"))
-                .thenReturn(Optional.of(mockUser));
-
-        when(passwordEncoder.matches("wrongPassword", "hashedPassword"))
-                .thenReturn(false);
-
-        assertThrows(RuntimeException.class, () ->
-                userService.login("testUser", "wrongPassword"));
-    }
+    
 }
