@@ -1,10 +1,10 @@
-# 📚 Timothy's Bookstore Application
+# Timothy's Bookstore Application
 
 A full-stack E-commerce platform built with **Java Spring Boot**, **Spring Security**, and **Vanilla JavaScript**. This application manages a book catalog, user authentication, persistent shopping carts, and order history.
 
 ---
 
-## 🚀 Features
+## Features
 
 ### **1. Security & Authentication**
 * **Custom Authentication:** Uses Spring Security with a custom `UserDetailsService`.
@@ -22,7 +22,7 @@ A full-stack E-commerce platform built with **Java Spring Boot**, **Spring Secur
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 | :--- | :--- |
@@ -34,7 +34,7 @@ A full-stack E-commerce platform built with **Java Spring Boot**, **Spring Secur
 
 ---
 
-## 📦 Project Structure
+## Project Structure
 
 ```text
 src/main/java/com/pinawin/bookstore/
@@ -44,3 +44,29 @@ src/main/java/com/pinawin/bookstore/
 ├── models/         # JPA Entities (Book, User, CartItem, Order)
 ├── repositories/   # Data Access Layer (Spring Data JPA)
 └── services/       # Business Logic Layer
+```
+## Installation & Setup
+
+### **1. Database Configuration**
+* Create a MySQL database named `bookstore_db` and update your `src/main/resources/application.properties`
+```text
+spring.datasource.url=jdbc:mysql://localhost:3306/bookstore_db
+spring.datasource.username=YOUR_USERNAME
+spring.datasource.password=YOUR_PASSWORD
+spring.jpa.hibernate.ddl-auto=update
+```
+### **2. Running the Application**
+* Run the app using Maven:
+
+```text
+./mvnw spring-boot:run
+```
+The app will be available at http://localhost:8081.
+
+### **3. Running Tests**
+*   Execute the comprehensive test suite:
+
+```text
+./mvnw test
+```
+
