@@ -115,4 +115,48 @@ public class CheckOutServiceTest {
         verify(orderRepository, never()).save(any(Order.class));
         verify(cartItemRepository, never()).deleteAll(any());
     }
+
+    @Test
+    @DisplayName("Should allow checkout when quantity matches exactly the remaining stock")
+    void testCheckout_ExactStockMatch() {
+        // Arrange: User wants 10, stock is exactly 10
+        testBook.setStock(10);
+        cartItems.getFirst().setQuantity(10);
+
+        when(cartItemRepository.findByUser(testUser)).thenReturn(cartItems);
+        when(orderRepository.save(any(Order.class))).thenAnswer(i -> i.getArguments()[0]);
+
+        // Act
+        checkoutService.checkout(testUser);
+
+        // Assert
+        assertEquals(0, testBook.getStock(), "Stock should be exactly zero after purchase.");
+        verify(orderRepository, times(1)).save(any(Order.class));
+    }
+
+    @Test
+    @DisplayName("Should correctly process multiple different books in one checkout")
+    void testCheckout_MultipleItems() {
+        // Arrange: Add a second book to the cart
+        Book book2 = new Book();
+        book2.setPrice(new BigDecimal("20.00"));
+        book2.setStock(5);
+
+        CartItem item2 = new CartItem();
+        item2.setBook(book2);
+        item2.setQuantity(1);
+
+        cartItems.add(item2); // Now cart has testBook ($50 x 2) and book2 ($20 x 1)
+
+        when(cartItemRepository.findByUser(testUser)).thenReturn(cartItems);
+        when(orderRepository.save(any(Order.class))).thenAnswer(i -> i.getArguments()[0]);
+
+        // Act
+        Order order = checkoutService.checkout(testUser);
+
+        // Assert
+        assertEquals(new BigDecimal("120.00"), order.getTotalAmount()); // (50*2) + 20
+        assertEquals(8, testBook.getStock());
+        assertEquals(4, book2.getStock());
+    }
 }
