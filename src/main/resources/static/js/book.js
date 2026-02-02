@@ -30,21 +30,28 @@ document.addEventListener("DOMContentLoaded", () => {
             const card = document.createElement("div");
             card.className = "book-card";
 
+            // If stock > 0, show button. Otherwise, show 'Out of Stock' text.
+            const actionHtml = book.stock > 0
+                ? `<button class="add-to-cart-btn">Add to Cart</button>`
+                : `<p class="out-of-stock-label">Out of Stock</p>`;
+
             // Template literal for book details
             card.innerHTML = `
                 <h3>${book.title}</h3>
                 <p><strong>Author:</strong> ${book.author}</p>
                 <p><strong>Category:</strong> ${book.category}</p>
                 <p><strong>Price:</strong> $${Number(book.price).toFixed(2)}</p>
+                <p><strong>Stock:</strong> ${book.stock}</p>
                 <p><strong>Description:</strong> ${book.description || 'No description available.'}</p>
-                <button class="add-to-cart-btn">Add to Cart</button>
+                ${actionHtml}
             `;
 
-            // Find the button inside the card
+            // Only attach listener if the button exists
             const btn = card.querySelector(".add-to-cart-btn");
+            if (btn) {
+                btn.addEventListener("click", () => addToCart(book.id));
+            }
 
-            // Attach the listener directly
-            btn.addEventListener("click", () => addToCart(book.id));
             bookGrid.appendChild(card);
         });
     }

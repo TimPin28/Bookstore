@@ -315,3 +315,22 @@ header a:hover {
     color: #2c3e50;
     margin-top: 10px;
 }
+
+/* Style for the button when it IS visible */
+.add-to-cart-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+/* Style for the 'Out of Stock' message */
+.out-of-stock-label {
+    color: #d9534f; /* Reddish color */
+    font-weight: bold;
+    text-transform: uppercase;
+    border: 1px solid #d9534f;
+    padding: 5px;
+    display: inline-block;
+}
