@@ -41,7 +41,7 @@ src/main/java/com/pinawin/bookstore/
 ├── auth/           # Security configuration and custom details
 ├── controllers/    # REST API endpoints
 ├── dto/            # Data Transfer Objects for clean API responses
-├── models/         # JPA Entities (Book, User, CartItem, Order)
+├── models/         # JPA Entities (Book, User, CartItem, Order, OrderItem)
 ├── repositories/   # Data Access Layer (Spring Data JPA)
 └── services/       # Business Logic Layer
 ```
