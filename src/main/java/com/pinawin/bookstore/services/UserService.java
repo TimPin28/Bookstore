@@ -45,6 +45,12 @@ public class UserService {
         if (userRepository.findByuserName(name).isPresent()) {
             throw new RuntimeException("User Name already registered");
         }
+        // Check if all fields have input
+        if (name == null || name.isBlank()
+                || password == null || password.isBlank()
+                || email == null || email.isBlank()) {
+            throw new RuntimeException("Fill all the fields");
+        }
 
         User user = new User();
         user.setUserName(name);

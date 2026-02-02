@@ -100,4 +100,56 @@ public class UserServiceTest {
         assertEquals("User Name already registered", exception.getMessage());
         verify(userRepository, never()).save(any(User.class));
     }
+
+    @Test
+    @DisplayName("Should throw exception when username exists with different casing")
+    void register_duplicateUsernameCaseInsensitive_throwsException() {
+        // Arrange
+        User existingUser = new User();
+        existingUser.setUserName("Timothy");
+
+        // Simulate finding the user even if searched with lowercase
+        when(userRepository.findByuserName("timothy")).thenReturn(Optional.of(existingUser));
+
+        // Act & Assert
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            userService.register("timothy", "new@example.com", "password");
+        });
+
+        assertEquals("User Name already registered", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Should throw exception when username or email is null")
+    void register_nullInputs_throwsException() {
+        // Act & Assert
+        assertThrows(RuntimeException.class, () -> {
+            userService.register(null, "test@example.com", "password");
+        });
+
+        assertThrows(RuntimeException.class, () -> {
+            userService.register("timothy", null, "password");
+        });
+    }
+
+    @Test
+    @DisplayName("Should ensure password is never saved in plain text")
+    void register_passwordIsHashed() {
+        // Arrange
+        String rawPw = "secret123";
+        String hashedPw = "encoded_hash_xyz";
+
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+        when(userRepository.findByuserName(anyString())).thenReturn(Optional.empty());
+        when(passwordEncoder.encode(rawPw)).thenReturn(hashedPw);
+        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArguments()[0]);
+
+        // Act
+        User result = userService.register("timothy", "t@test.com", rawPw);
+
+        // Assert
+        assertNotEquals(rawPw, result.getPassword());
+        assertEquals(hashedPw, result.getPassword());
+        verify(passwordEncoder, atLeastOnce()).encode(rawPw);
+    }
 }
