@@ -69,4 +69,18 @@ public class CustomUserDetailsServiceTest {
             userDetailsService.loadUserByUsername("UnknownUser");
         });
     }
+
+    @Test
+    @DisplayName("Should load user correctly regardless of username casing")
+    void testLoadUserByUsername_CaseInsensitivity() {
+        // Arrange
+        when(userRepository.findByuserName("timothy")).thenReturn(Optional.of(testUser));
+
+        // Act
+        UserDetails result = userDetailsService.loadUserByUsername("timothy");
+
+        // Assert
+        assertEquals("Timothy", result.getUsername());
+        verify(userRepository, times(1)).findByuserName("timothy");
+    }
 }
