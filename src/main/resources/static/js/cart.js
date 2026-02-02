@@ -64,7 +64,31 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     /**
-     * 3. Checkout Execution
+     * 3. Bulk Deletion (Clear Cart)
+     * Communicates with the backend to remove all items from the user's cart.
+     */
+    document.getElementById("clearCartBtn").addEventListener("click", async () => {
+        // Confirmation prompt to ensure the user actually wants to delete everything
+        if (!confirm("Are you sure you want to clear your entire cart?")) {
+            return;
+        }
+
+        const response = await fetch("/api/cart/clear", {
+            method: "POST", // Using POST for a destructive action
+            credentials: "include"
+        });
+
+        if (response.ok) {
+            alert("Cart cleared successfully!");
+            // Refresh page to sync the UI with the now-empty database state
+            window.location.reload();
+        } else {
+            alert("Failed to clear cart.");
+        }
+    });
+
+    /**
+     * 4. Checkout Execution
      * Attaches an event listener to trigger the conversion of the cart into an Order.
      */
     document.getElementById("checkoutBtn").addEventListener("click", async () => {

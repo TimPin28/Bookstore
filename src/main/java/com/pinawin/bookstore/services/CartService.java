@@ -5,6 +5,7 @@ import com.pinawin.bookstore.models.CartItem;
 import com.pinawin.bookstore.models.User;
 import com.pinawin.bookstore.repositories.BookRepository;
 import com.pinawin.bookstore.repositories.CartItemRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +29,17 @@ public class CartService {
                        BookRepository bookRepository) {
         this.cartItemRepository = cartItemRepository;
         this.bookRepository = bookRepository;
+    }
+
+    /**
+     * Removes all items from the database for a specific user.
+     * @param user The authenticated user whose cart is being emptied.
+     * @Transactional is required for delete operations in Spring Data JPA.
+     */
+    @Transactional // Ensures the deletion is atomic; if it fails, nothing is deleted.
+    public void clearCart(User user) {
+        // Calls the repository to delete all rows matching the user_id
+        cartItemRepository.deleteAllByUser(user);
     }
 
     /**

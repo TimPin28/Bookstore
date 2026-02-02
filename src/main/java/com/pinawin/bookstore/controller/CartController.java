@@ -69,4 +69,21 @@ public class CartController {
         
         return cartService.getCart(user);
     }
+
+    /**
+     * POST endpoint to clear the current user's cart.
+     * @param authentication The current security context injected by Spring Security.
+     * @return 200 OK on success.
+     */
+    @PostMapping("/clear")
+    public ResponseEntity<Void> clearCart(Authentication authentication) {
+        // 1. Identify the user from the session principal
+        User user = (User) authentication.getPrincipal();
+
+        // 2. Execute the clear logic in the service layer
+        cartService.clearCart(user);
+
+        // 3. Return a successful response to the frontend
+        return ResponseEntity.ok().build();
+    }
 }

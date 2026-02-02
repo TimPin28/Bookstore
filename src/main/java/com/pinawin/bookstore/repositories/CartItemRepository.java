@@ -32,5 +32,11 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
      * @return A list of CartItem entities associated with the user.
      */
     List<CartItem> findByUser(User user);
+
+    /**
+     * Removes all shopping cart items associated with a specific user.
+     * @param user the user entity whose cart items should be deleted.
+     */
+    void deleteAllByUser(User user);
 }
 
