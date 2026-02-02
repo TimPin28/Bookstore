@@ -75,9 +75,12 @@ public class SecurityConfig {
                             // Returns a 200 OK status instead of a default redirect to /login
                             response.setStatus(HttpServletResponse.SC_OK);
                         })
-                        .invalidateHttpSession(true) // Destroys the server-side session
-                        .deleteCookies("JSESSIONID") // Clears the browser session cookie
-                        .clearAuthentication(true)   // Wipes the security context
+                        // Destroys the server-side session
+                        .invalidateHttpSession(true)
+                        // Clears the browser session cookie
+                        .deleteCookies("JSESSIONID")
+                        // Wipes the security context
+                        .clearAuthentication(true)
                 )
                 
                 .sessionManagement(session -> session

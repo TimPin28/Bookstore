@@ -72,5 +72,8 @@ class UserServiceTest {
                 )
         );
     }
+
+    // Simulate registering with duplicate userName
+
     
 }
