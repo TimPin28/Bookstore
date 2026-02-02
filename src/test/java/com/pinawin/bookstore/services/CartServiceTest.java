@@ -111,4 +111,35 @@ public class CartServiceTest {
         // Verify that the repository method was called exactly once
         verify(cartItemRepository, times(1)).deleteAllByUser(testUser);
     }
+
+    @Test
+    @DisplayName("Should block addition if stock is exactly 0 (matches UI 'Out of Stock' state)")
+    void testAddToCart_ZeroStock() {
+        // Arrange: Stock is 0, just like your UI shows
+        testBook.setStock(0);
+        when(bookRepository.findById(101L)).thenReturn(Optional.of(testBook));
+
+        // Act & Assert
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> {
+            cartService.addToCart(testUser, 101L);
+        });
+
+        assertEquals("This book is currently out of stock.", ex.getMessage());
+        verify(cartItemRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Should allow adding if stock is 1 (the minimum visible state)")
+    void testAddToCart_MinimumStock() {
+        // Arrange: Stock is 1, button is still visible in UI
+        testBook.setStock(1);
+        when(bookRepository.findById(101L)).thenReturn(Optional.of(testBook));
+        when(cartItemRepository.findByUserAndBook(testUser, testBook)).thenReturn(Optional.empty());
+
+        // Act
+        cartService.addToCart(testUser, 101L);
+
+        // Assert
+        verify(cartItemRepository, times(1)).save(any(CartItem.class));
+    }
 }

@@ -57,6 +57,10 @@ public class CartService {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new RuntimeException("Book not found"));
 
+        if (book.getStock() <= 0) {
+            throw new RuntimeException("This book is currently out of stock.");
+        }
+
         // Check if the book is already in the user's cart
         CartItem cartItem = cartItemRepository
                 .findByUserAndBook(user, book)
