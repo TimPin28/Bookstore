@@ -86,4 +86,34 @@ public class BookServiceTest {
         assertEquals("Technology", result.getFirst().getCategory());
         verify(bookRepository, atLeastOnce()).findByCategoryContainingIgnoreCase(category);
     }
+
+    @Test
+    @DisplayName("Should handle search queries with special characters")
+    void testSearch_SpecialCharacters() {
+        // Arrange
+        String query = "Spring & Java!!!";
+        when(bookRepository.findByTitleContainingIgnoreCase(query)).thenReturn(List.of());
+
+        // Act
+        List<Book> results = bookService.searchBooks(query);
+
+        // Assert
+        assertTrue(results.isEmpty());
+        verify(bookRepository, times(1)).findByTitleContainingIgnoreCase(query);
+    }
+
+    @Test
+    @DisplayName("Should find books by category regardless of string casing")
+    void testGetByCategory_CaseInsensitive() {
+        // Arrange
+        String category = "fiction";
+        when(bookRepository.findByCategoryContainingIgnoreCase("fiction")).thenReturn(List.of(new Book()));
+
+        // Act
+        List<Book> results = bookService.filterByCategory(category);
+
+        // Assert
+        assertFalse(results.isEmpty());
+        verify(bookRepository, times(1)).findByCategoryContainingIgnoreCase("fiction");
+    }
 }
