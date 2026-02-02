@@ -99,4 +99,16 @@ public class CartServiceTest {
         assertEquals(2, result.size());
         verify(cartItemRepository, times(1)).findByUser(testUser);
     }
+
+    @Test
+    @DisplayName("Should call repository to delete all items for a user")
+    void testClearCart() {
+        // Act
+        // We pass the testUser created in the @BeforeEach setUp method
+        cartService.clearCart(testUser);
+
+        // Assert
+        // Verify that the repository method was called exactly once
+        verify(cartItemRepository, times(1)).deleteAllByUser(testUser);
+    }
 }
