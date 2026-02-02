@@ -10,7 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class LoginResponse {
+public class LoginRequest {
     /**
      * The username provided by the user in the login form.
      */

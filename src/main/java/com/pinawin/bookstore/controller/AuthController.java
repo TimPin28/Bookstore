@@ -1,7 +1,7 @@
 package com.pinawin.bookstore.controller;
 
-import com.pinawin.bookstore.DTO.LoginResponse;
-import com.pinawin.bookstore.DTO.RegisterResponse;
+import com.pinawin.bookstore.DTO.LoginRequest;
+import com.pinawin.bookstore.DTO.RegisterRequest;
 import com.pinawin.bookstore.models.User;
 import com.pinawin.bookstore.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,7 +36,7 @@ public class AuthController {
      * @return The newly created User entity.
      */
     @PostMapping("/register")
-    public User register(@RequestBody RegisterResponse request) {
+    public User register(@RequestBody RegisterRequest request) {
         return userService.register(
                 request.getUserName(),
                 request.getEmail(),
@@ -52,7 +52,7 @@ public class AuthController {
      * @return The authenticated User principal.
      */
     @PostMapping("/login")
-    public User login(@RequestBody LoginResponse request,
+    public User login(@RequestBody LoginRequest request,
                       HttpServletRequest httpRequest) {
 
         // Create an unauthenticated token with the provided credentials

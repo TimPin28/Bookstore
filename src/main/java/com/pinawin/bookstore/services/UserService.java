@@ -30,9 +30,9 @@ public class UserService {
      * Registers a new user in the system.
      * Validates that the email and userName is not already in use 
      * and hashes the password for security.
-     * @param userName The chosen username.
+     * @param name The chosen username.
      * @param email The user's email address.
-     * @param rawPassword The plain-text password from the registration form.
+     * @param password The plain-text password from the registration form.
      * @return The saved User entity.
      * @throws RuntimeException if the email is already registered.
      */

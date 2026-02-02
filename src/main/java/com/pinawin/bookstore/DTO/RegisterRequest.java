@@ -10,7 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class RegisterResponse {
+public class RegisterRequest {
 
     /**
      * The unique username the user wishes to use for their account.
