@@ -2,6 +2,7 @@ package com.pinawin.bookstore.services;
 
 import com.pinawin.bookstore.models.User;
 import com.pinawin.bookstore.repositories.UserRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,11 +14,14 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for UserService.
+ * Ensures account creation logic and credential security are functioning correctly.
+ */
 @ExtendWith(MockitoExtension.class)
-class UserServiceTest {
+public class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
@@ -28,52 +32,72 @@ class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
-    // Simulate a successful register
     @Test
+    @DisplayName("Should successfully register a new user with a hashed password")
     void register_successful() {
-        // 1. Arrange
-        when(userRepository.findByEmail("test@email.com"))
-                .thenReturn(Optional.empty());
+        // Arrange
+        String rawPassword = "password123";
+        String hashed = "hashed_pw";
 
-        when(passwordEncoder.encode("password"))
-                .thenReturn("hashed");
+        // Mock both checks to return empty (meaning neither email nor username is taken)
+        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.empty());
+        when(userRepository.findByuserName("timothy")).thenReturn(Optional.empty());
 
-        // We stub the save so we don't get a NullPointerException
-        when(userRepository.save(any(User.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(passwordEncoder.encode(rawPassword)).thenReturn(hashed);
 
-        // 2. Act
-        User user = userService.register(
-                "testUser",
-                "test@email.com",
-                "password"
-        );
+        // Simulate the save operation returning the object passed to it
+        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArguments()[0]);
 
-        // 3. Assert
-        assertNotNull(user);
-        assertEquals("testUser", user.getUsername());
-        assertEquals("test@email.com", user.getEmail());
-        assertEquals("hashed", user.getPassword());
-        // verify ensures the save actually happened in the database context
-        verify(userRepository).save(any(User.class));
+        // Act
+        User result = userService.register("timothy", "test@example.com", rawPassword);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals("timothy", result.getUsername()); // Matches your model field
+        assertEquals("test@example.com", result.getEmail());
+        assertEquals(hashed, result.getPassword());
+
+        // Verify all critical interactions occurred exactly once
+        verify(userRepository, times(1)).findByEmail("test@example.com");
+        verify(userRepository, times(1)).findByuserName("timothy");
+        verify(userRepository, times(1)).save(any(User.class));
+        verify(passwordEncoder, times(1)).encode(rawPassword);
     }
 
-    // Simulate registering with duplicate email
     @Test
+    @DisplayName("Should throw exception when email is already in use")
     void register_duplicateEmail_throwsException() {
-        when(userRepository.findByEmail("test@email.com"))
-                .thenReturn(Optional.of(new User()));
+        // Arrange
+        User existingUser = new User();
+        existingUser.setEmail("test@example.com");
+        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(existingUser));
 
-        assertThrows(RuntimeException.class, () ->
-                userService.register(
-                        "testUser",
-                        "test@email.com",
-                        "password"
-                )
-        );
+        // Act & Assert
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            userService.register("timothy", "test@example.com", "password");
+        });
+
+        assertEquals("Email already registered", exception.getMessage());
+        // Verify that the save method was NEVER called due to the exception
+        verify(userRepository, never()).save(any(User.class));
     }
 
-    // Simulate registering with duplicate userName
+    @Test
+    @DisplayName("Should throw exception when username is already taken")
+    void register_duplicateUsername_throwsException() {
+        // Arrange
+        User existingUser = new User();
+        existingUser.setUserName("timothy_p");
 
-    
+        // Mock the repository to find the user by name
+        when(userRepository.findByuserName("timothy_p")).thenReturn(Optional.of(existingUser));
+
+        // Act & Assert
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            userService.register("timothy_p", "new_email@example.com", "password");
+        });
+
+        assertEquals("User Name already registered", exception.getMessage());
+        verify(userRepository, never()).save(any(User.class));
+    }
 }

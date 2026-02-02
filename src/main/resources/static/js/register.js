@@ -33,7 +33,14 @@ document.getElementById("registerForm").addEventListener("submit", async e => {
         alert("Registration successful!");
         window.location.href = "login.html";
     } else {
-        // Handle failure
-        alert("Registration failed");
+        /**
+         * Extract the error message from the backend.
+         * Spring Boot default error response contains a "message" field.
+         */
+        const errorData = await response.json();
+
+        const errorMessage = errorData.message || "Registration failed. Please try again.";
+
+        alert(errorMessage);
     }
 });
