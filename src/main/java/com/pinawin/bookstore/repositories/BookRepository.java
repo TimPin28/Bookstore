@@ -1,9 +1,10 @@
 package com.pinawin.bookstore.repositories;
 
 import com.pinawin.bookstore.models.Book;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 
 /**
  * Repository interface for Book entities.
@@ -19,7 +20,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
      * @param category The category string to search for.
      * @return A list of books matching the category criteria.
      */
-    List<Book> findByCategoryContainingIgnoreCase(String category);
+    Page<Book> findByCategoryContainingIgnoreCase(String category, Pageable pageable);
 
     /**
      * Searches for books based on a keyword in the title.
@@ -28,7 +29,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
      * @param keyword The title keyword to search for.
      * @return A list of books whose titles contain the keyword.
      */
-    List<Book> findByTitleContainingIgnoreCase (String keyword);
+    Page<Book> findByTitleContainingIgnoreCase (String keyword, Pageable pageable);
 
 }
 

@@ -7,22 +7,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById("searchInput");
     const categoryInput = document.getElementById("categoryInput");
 
+    // --- Pagination State ---
+    let currentPage = 0;
+    const pageSize = 8;
 
-    // --- 1. Initial Load ---
     // Automatically populates the grid with all available books on page load.
-    loadBooks();
+    loadBooks(0);
 
     /**
      * --- 2. Helper: Render Books to UI ---
      * Dynamically builds the HTML grid from a book array.
      * @param {Array} books - The array of book objects from the API.
      */
-    function renderBooks(books) {
+    function renderPage(pageData) {
+        const books = pageData.content
         // Clear grid before rendering new items
         bookGrid.innerHTML = ""; 
 
-        if (books.length === 0) {
+        if (!books || books.length === 0) {
             bookGrid.innerHTML = "<p>No books found.</p>";
+            // Allow render controls to go back
+            renderControls(pageData);
             return;
         }
 
@@ -54,19 +59,82 @@ document.addEventListener("DOMContentLoaded", () => {
 
             bookGrid.appendChild(card);
         });
+        renderControls(pageData);
+    }
+
+    async function searchBooks(keyword, page) {
+        try {
+            const response = await fetch(`/api/books/search?keyword=${encodeURIComponent(keyword)}&page=${page}&size=${pageSize}`);
+            const data = await response.json();
+            renderPage(data); // This now handles the Page object
+        } catch (error) {
+            console.error("Error searching books:", error);
+        }
+    }
+
+    async function filterByCategory(category, page) {
+        try {
+            const response = await fetch(`/api/books/category?category=${encodeURIComponent(category)}&page=${page}&size=${pageSize}`);
+            const data = await response.json();
+            renderPage(data);
+        } catch (error) {
+            console.error("Error filtering category:", error);
+        }
+    }
+
+    function renderControls(pageData) {
+        let controls = document.getElementById("paginationControls");
+
+        if (!controls) {
+            controls = document.createElement("div");
+            controls.id = "paginationControls";
+            controls.className = "pagination-container";
+            bookGrid.after(controls); // Place it right after the grid
+        }
+
+        controls.innerHTML = `
+            <button ${pageData.first ? 'disabled' : ''} id="prevBtn">Previous</button>
+            <span>Page ${pageData.number + 1} of ${pageData.totalPages}</span>
+            <button ${pageData.last ? 'disabled' : ''} id="nextBtn">Next</button>
+        `;
+
+        document.getElementById("prevBtn").onclick = () => {
+            currentPage--;
+            executeFetch();
+        };
+
+        document.getElementById("nextBtn").onclick = () => {
+            currentPage++;
+            executeFetch();
+        };
+    }
+
+    function executeFetch() {
+        const keyword = searchInput.value.trim();
+        const category = categoryInput.value.trim();
+
+        if (keyword) {
+            searchBooks(keyword, currentPage);
+        }
+        else if (category) {
+            filterByCategory(keyword, currentPage);
+        }
+        else {
+            loadBooks(currentPage);
+        }
     }
 
     /**
      * --- 3. API Call: Get All Books ---
      * Standard fetch to retrieve the full catalog.
      */
-    async function loadBooks() {
+    async function loadBooks(page) {
         try {
-            const response = await fetch("/api/books");
-            const books = await response.json();
-            renderBooks(books);
+            const response = await fetch(`/api/books?page=${page}&size=${pageSize}`);
+            const data = await response.json();
+            renderPage(data);
         } catch (error) {
-            console.error("Error loading all books:", error);
+            console.error("Error loading books:", error);
         }
     }
 
@@ -76,20 +144,15 @@ document.addEventListener("DOMContentLoaded", () => {
      */
     searchInput.addEventListener("input", async () => {
         const keyword = searchInput.value.trim();
+        currentPage = 0;
 
         if (keyword === "") {
             // Revert to full list if input is cleared
-            loadBooks();
+            loadBooks(0);
             return;
         }
 
-        try {
-            const response = await fetch(`/api/books/search?keyword=${encodeURIComponent(keyword)}`);
-            const books = await response.json();
-            renderBooks(books);
-        } catch (error) {
-            console.error("Error searching titles:", error);
-        }
+        searchBooks(keyword, currentPage);
     });
 
     /**
@@ -98,27 +161,15 @@ document.addEventListener("DOMContentLoaded", () => {
      */
     categoryInput.addEventListener("input", async () => {
         const categoryValue = categoryInput.value.trim();
+        currentPage = 0;
 
         if (categoryValue === "") {
             // Revert to full list if input is cleared
-            loadBooks();
+            loadBooks(0);
             return;
         }
 
-        try {
-            // Ensure the parameter name 'category' matches @RequestParam in BookController
-            const response = await fetch(`/api/books/category?category=${encodeURIComponent(categoryValue)}`);
-
-            if (response.ok) {
-                const books = await response.json();
-                console.log("Category search results:", books);
-                renderBooks(books);
-            } else {
-                console.error("Server returned an error for category search");
-            }
-        } catch (error) {
-            console.error("Fetch error for category:", error);
-        }
+        filterByCategory(categoryValue, currentPage);
     });
 
     /**

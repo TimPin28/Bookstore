@@ -2,9 +2,11 @@ package com.pinawin.bookstore.services;
 
 import com.pinawin.bookstore.models.Book;
 import com.pinawin.bookstore.repositories.BookRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 /**
  * Service class for managing book-related business logic.
@@ -28,8 +30,9 @@ public class BookService {
      * Retrieves all available books from the database.
      * @return A list containing all Book entities.
      */
-    public List<Book> getAllBooks() {
-        return bookRepository.findAll();
+    public Page<Book> getAllBooks(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return bookRepository.findAll(pageable);
     }
 
     /**
@@ -37,8 +40,9 @@ public class BookService {
      * @param keyword The title snippet to search for.
      * @return A list of books matching the search criteria.
      */
-    public List<Book> searchBooks(String keyword) {
-        return bookRepository.findByTitleContainingIgnoreCase(keyword);
+    public Page<Book> searchBooks(String keyword, int page, int size) {
+        Pageable  pageable = PageRequest.of(page, size);
+        return bookRepository.findByTitleContainingIgnoreCase(keyword,  pageable);
     }
 
     /**
@@ -46,8 +50,9 @@ public class BookService {
      * @param category The category name (e.g., "Fiction", "Science").
      * @return A list of books belonging to the specified category.
      */
-    public List<Book> filterByCategory(String category) {
-        return bookRepository.findByCategoryContainingIgnoreCase(category);
+    public Page<Book> filterByCategory(String category, int page, int size) {
+        Pageable  pageable = PageRequest.of(page, size);
+        return bookRepository.findByCategoryContainingIgnoreCase(category,  pageable);
     }
 
 }

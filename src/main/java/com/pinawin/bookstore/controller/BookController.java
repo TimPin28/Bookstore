@@ -2,9 +2,9 @@ package com.pinawin.bookstore.controller;
 
 import com.pinawin.bookstore.models.Book;
 import com.pinawin.bookstore.services.BookService;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 /**
  * REST Controller for managing book-related operations.
@@ -32,8 +32,9 @@ public class BookController {
      * @return A list of Book entities.
      */
     @GetMapping
-    public List<Book> getAllBooks() {
-        return bookService.getAllBooks();
+    public Page<Book> getAllBooks(@RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "8") int size) {
+        return bookService.getAllBooks(page, size);
     }
 
     /**
@@ -43,8 +44,10 @@ public class BookController {
      * @return A list of Book entities matching the title search.
      */
     @GetMapping("/search")
-    public List<Book> searchBooks(@RequestParam String keyword) {
-        return bookService.searchBooks(keyword);
+    public Page<Book> searchBooks(@RequestParam String keyword,
+                                  @RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "8") int size) {
+        return bookService.searchBooks(keyword, page, size);
     }
 
     /**
@@ -54,8 +57,10 @@ public class BookController {
      * @return A list of Book entities belonging to the specified category.
      */
     @GetMapping("/category")
-    public List<Book> byCategory(@RequestParam("category") String category) {
-        return bookService.filterByCategory(category);
+    public Page<Book> byCategory(@RequestParam("category") String category,
+                                 @RequestParam(defaultValue = "0") int page,
+                                 @RequestParam(defaultValue = "8") int size) {
+        return bookService.filterByCategory(category, page, size);
     }
 
 }
