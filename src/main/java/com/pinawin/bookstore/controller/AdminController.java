@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * Administrative Controller restricted to users with ROLE_ADMIN.
- * Handles sensitive operations including inventory management and
- * elevated user registration.
+ * This controller handles elevated operations including manual inventory
+ * management and the registration of new users with specific roles.
+ * Access is governed by the SecurityConfig's role-based authorization rules.
  */
 @RestController
 @RequestMapping("/api/admin")
@@ -20,14 +21,21 @@ public class AdminController {
     private final BookRepository bookRepository;
     private final UserService userService;
 
+    /**
+     * Constructor-based dependency injection for required repositories and services.
+     * @param bookRepository The data access object for Book entities.
+     * @param userService The service handling user logic and role assignment.
+     */
     public AdminController(BookRepository bookRepository, UserService userService) {
         this.bookRepository = bookRepository;
         this.userService = userService;
     }
 
     /**
-     * Requirement: "Add new books"
-     * POST /api/admin/books
+     * Persists a new book entity to the catalog.
+     * Maps to POST /api/admin/books.
+     * @param book The Book model containing title, author, price, and stock data.
+     * @return A ResponseEntity containing the successfully persisted Book.
      */
     @PostMapping("/books")
     public ResponseEntity<Book> addBook(@RequestBody Book book) {
@@ -36,12 +44,22 @@ public class AdminController {
     }
 
     /**
-     * Requirement: "Register new user" (from Admin context)
-     * POST /api/admin/users
+     * Facilitates the creation of new user accounts from an administrative context,
+     * allowing for explicit role assignment (e.g., creating additional admins).
+     * Maps to POST /api/admin/users.
+     * @param request The DTO containing username, email, password, and the target role.
+     * @return A ResponseEntity containing the newly created User entity.
      */
     @PostMapping("/users")
     public ResponseEntity<User> registerUserByAdmin(@RequestBody RegisterRequest request) {
-        // Uses the updated UserService that now supports role assignment
-        return ResponseEntity.ok(userService.registerUser(request));
+        // Maps DTO fields to the specialized UserService registration logic
+        User newUser = userService.register(
+                request.getUserName(),
+                request.getEmail(),
+                request.getPassword(),
+                request.getRole()
+        );
+
+        return ResponseEntity.ok(newUser);
     }
 }

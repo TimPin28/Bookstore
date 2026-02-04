@@ -40,7 +40,8 @@ public class AuthController {
         return userService.register(
                 request.getUserName(),
                 request.getEmail(),
-                request.getPassword()
+                request.getPassword(),
+                request.getRole()
         );
     }
 

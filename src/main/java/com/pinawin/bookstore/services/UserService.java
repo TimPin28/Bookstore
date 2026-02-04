@@ -33,10 +33,18 @@ public class UserService {
      * @param name The chosen username.
      * @param email The user's email address.
      * @param password The plain-text password from the registration form.
+     * @param role The assigned role ("ROLE_USER" or "ROLE_ADMIN").
      * @return The saved User entity.
      * @throws RuntimeException if the email and userName is already registered.
      */
-    public User register(String name, String email, String password) {
+    public User register(String name, String email, String password, String role) {
+
+        // Check if all fields have input
+        if (name == null || name.isBlank()
+                || password == null || password.isBlank()
+                || email == null || email.isBlank()) {
+            throw new RuntimeException("Fill all the fields");
+        }
 
         // Check for existing email and userName to prevent duplicate accounts
         if (userRepository.findByEmail(email).isPresent()) {
@@ -45,16 +53,18 @@ public class UserService {
         if (userRepository.findByuserName(name).isPresent()) {
             throw new RuntimeException("User Name already registered");
         }
-        // Check if all fields have input
-        if (name == null || name.isBlank()
-                || password == null || password.isBlank()
-                || email == null || email.isBlank()) {
-            throw new RuntimeException("Fill all the fields");
-        }
 
         User user = new User();
         user.setUserName(name);
-        user.setRole("ROLE_USER");
+
+        // Use provided role or default to ROLE_USER if null/empty
+        if (role != null && !role.isBlank()) {
+            user.setRole(role);
+        }
+        else {
+            user.setRole("ROLE_USER");
+        }
+
         user.setEmail(email);
 
         // Hash the password before saving to the database.

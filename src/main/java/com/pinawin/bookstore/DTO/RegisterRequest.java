@@ -29,4 +29,9 @@ public class RegisterRequest {
      */
     private String password;
 
+    /**
+     * The security role assigned to the user (ROLE_USER, ROLE_ADMIN)
+     */
+    private String role;
+
 }
