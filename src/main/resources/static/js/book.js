@@ -209,7 +209,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (response.ok) {
             alert("Added to cart!");
-        } else if (response.status === 401 || response.status === 403) {
+        } else if (response.status === 403) {
+            alert("You do not have permission to perform this action.");
+            window.location.href = "access-denied.html";
+        } else if (response.status === 401 ) {
             alert("Please login first");
             window.location.href = "login.html";
         } else {
