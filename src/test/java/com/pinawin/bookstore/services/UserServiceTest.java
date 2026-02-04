@@ -49,7 +49,7 @@ public class UserServiceTest {
         when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArguments()[0]);
 
         // Act
-        User result = userService.register("timothy", "test@example.com", rawPassword);
+        User result = userService.register("timothy", "test@example.com", rawPassword, "ROLE_USER");
 
         // Assert
         assertNotNull(result);
@@ -74,7 +74,7 @@ public class UserServiceTest {
 
         // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            userService.register("timothy", "test@example.com", "password");
+            userService.register("timothy", "test@example.com", "password", "ROLE_USER");
         });
 
         assertEquals("Email already registered", exception.getMessage());
@@ -94,7 +94,7 @@ public class UserServiceTest {
 
         // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            userService.register("timothy_p", "new_email@example.com", "password");
+            userService.register("timothy_p", "new_email@example.com", "password",  "ROLE_USER");
         });
 
         assertEquals("User Name already registered", exception.getMessage());
@@ -113,7 +113,7 @@ public class UserServiceTest {
 
         // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            userService.register("timothy", "new@example.com", "password");
+            userService.register("timothy", "new@example.com", "password",  "ROLE_USER");
         });
 
         assertEquals("User Name already registered", exception.getMessage());
@@ -124,11 +124,11 @@ public class UserServiceTest {
     void register_nullInputs_throwsException() {
         // Act & Assert
         assertThrows(RuntimeException.class, () -> {
-            userService.register(null, "test@example.com", "password");
+            userService.register(null, "test@example.com", "password", "ROLE_USER");
         });
 
         assertThrows(RuntimeException.class, () -> {
-            userService.register("timothy", null, "password");
+            userService.register("timothy", null, "password", "ROLE_USER");
         });
     }
 
@@ -145,7 +145,7 @@ public class UserServiceTest {
         when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArguments()[0]);
 
         // Act
-        User result = userService.register("timothy", "t@test.com", rawPw);
+        User result = userService.register("timothy", "t@test.com", rawPw, "ROLE_USER");
 
         // Assert
         assertNotEquals(rawPw, result.getPassword());
