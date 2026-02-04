@@ -4,38 +4,81 @@ body {
     padding: 0;
 }
 
+/* Navigation Bar Styling */
 header {
-    background: #2c3e50;
-    color: white;
-    padding: 15px;
+    background-color: #2c3e50; /* Professional Deep Navy */
+    padding: 0.5rem 5%;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    color: white;
 }
 
+/* Brand/Logo on the Left */
+header > a:first-child {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #ffffff;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Nav Link Container */
 nav {
     display: flex;
-    gap: 20px;
     align-items: center;
-    padding: 10px 0;
+    gap: 15px; /* Spacing between all nav items */
 }
 
+/* Auth Section Containers */
+#auth-guest, #auth-user {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Global Link Styling for Nav */
 nav a, nav button {
     text-decoration: none;
-    color: white;
+    color: #ecf0f1 !important; /* Ensure visibility against dark background */
     font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 1rem;
+    padding: 5px 10px;
 }
 
-nav a:hover, nav button:hover {
-    color: #007bff;
+nav a:hover {
+    color: #3498db !important; /* Bright blue on hover */
 }
 
+/* Administrative Special Link */
+#adminLink {
+    color: #f1c40f !important; /* Gold */
+    border: 1px solid #f1c40f;
+    border-radius: 4px;
+}
+
+#adminLink:hover {
+    background-color: #f1c40f;
+    color: #2c3e50 !important;
+}
+
+/* Red Logout Button */
 #logoutBtn {
-    color: #dc3545; /* Red for logout */
+    background-color: #e74c3c;
+    color: white !important;
+    border-radius: 4px;
+    padding: 6px 15px;
+}
+
+#logoutBtn:hover {
+    background-color: #c0392b;
 }
 
 .hero {

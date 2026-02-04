@@ -7,23 +7,21 @@
 </head>
 <body>
 <header>
-    <h1>Your Shopping Cart</h1>
+    <a href="index.html">📚 Online Bookstore</a>
     <nav>
-        <a href="index.html">Home</a>
-        <a href="books.html">Books</a>
+        <a href="books.html">Catalog</a>
 
-        <div class="nav-links">
-            <span id="auth-guest">
-                <a href="login.html">Login</a>
-                <a href="register.html">Register</a>
-            </span>
+        <span id="auth-guest">
+            <a href="login.html">Login</a>
+            <a href="register.html">Register</a>
+        </span>
 
-            <span id="auth-user" style="display: none;">
-                <a href="profile.html" id="profileLink">My Orders</a>
-                <a href="admin.html" id="adminLink" style="display: none;">Admin Dashboard</a>
-                <button id="logoutBtn">Logout</button>
-            </span>
-        </div>
+        <span id="auth-user" style="display: none;">
+            <a href="shoppingCart.html" id="cartLink">My Cart</a>
+            <a href="profile.html" id="profileLink">My Orders</a>
+            <a href="admin.html" id="adminLink" style="display: none;">Admin Dashboard</a>
+            <button id="logoutBtn">Logout</button>
+        </span>
     </nav>
 </header>
 
