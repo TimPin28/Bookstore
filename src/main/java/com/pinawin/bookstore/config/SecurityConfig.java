@@ -58,7 +58,32 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
+                        // 1. PUBLIC ENDPOINTS: Anyone can browse books, login, or register
+                        .requestMatchers("/", "/index.html", "/books.html", "/login.html", "/register.html").permitAll()
+                        .requestMatchers("/css/**", "/js/**").permitAll()
+                        .requestMatchers("/api/books/**", "/api/auth/**").permitAll()
+
+                        // 2. ADMIN ENDPOINTS: Strictly restricted to the ADMIN role
+                        // These match your requirement: "Admin page: add register new user and new books"
+                        .requestMatchers("/admin.html").hasRole("ADMIN")
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                        // 3. PROTECTED ENDPOINTS: Requires at least ROLE_USER
+                        .requestMatchers("/profile.html", "/shoppingCart.html").authenticated()
+                        .requestMatchers("/api/cart/**", "/api/checkout/**", "/api/orders/**").authenticated()
+
+                        // 4. GLOBAL GUARD: Any other request must be authenticated
+                        .anyRequest().authenticated()
+                )
+
+                .exceptionHandling(exception -> exception
+                        // Redirects users with the wrong role (e.g., USER trying to access ADMIN)
+                        .accessDeniedPage("/access-denied.html")
+
+                        // Optional: Redirects unauthenticated users (guests) to login
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.sendRedirect("/login.html?error=unauthorized");
+                        })
                 )
 
                 // Ensure the SecurityContext is saved in the session
