@@ -12,13 +12,17 @@ A full-stack E-commerce platform built with **Java Spring Boot**, **Spring Secur
 * **Session Management:** Role-based access control and persistent login sessions.
 
 ### **2. Catalog & Shopping**
-* **Live Search:** Filter books by title or category in real-time.
+* **Paginated Search:** Filter books by title or category in real-time.
 * **Stock Management:** Dynamic UI that hides "Add to Cart" buttons when items are out of stock.
 * **Cart Persistence:** Add, remove, and clear items within a session-aware shopping cart.
 
 ### **3. Order Processing**
 * **Transactional Checkout:** Atomic operations that create orders and reduce inventory simultaneously.
 * **Order History:** A personalized profile page to view past purchases.
+
+### **4. Administrative Module**
+* **Inventory Control:** Admins can add new books to the catalog with real-time validation for price and stock.
+* **User Management:** Elevated dashboard to register new accounts and assign security roles (ROLE_ADMIN vs. ROLE_USER).
 
 ---
 
@@ -45,6 +49,17 @@ src/main/java/com/pinawin/bookstore/
 ├── repositories/   # Data Access Layer (Spring Data JPA)
 └── services/       # Business Logic Layer
 ```
+
+## Access Control Levels
+
+| Feature        | Guest | ROLE_USER | ROLE_ADMIN |
+|:---------------|:-----:|:---------:|:----------:|
+| Browse Catalog |   ✅   |     ✅     |     ✅      |
+| Add to Cart    |   ❌   |     ✅     |     ❌      |
+| View Orders    |   ❌   |     ✅     |     ❌      |
+| Add New Books  |   ❌   |     ❌     |     ✅      |
+| Manage Users   |   ❌   |     ❌     |     ✅      |
+
 ## Installation & Setup
 
 ### **1. Database Configuration**
