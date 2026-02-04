@@ -27,8 +27,10 @@ public class BookService {
     }
 
     /**
-     * Retrieves all available books from the database.
-     * @return A list containing all Book entities.
+     * Retrieves a paginated slice of all available books from the database.
+     * @param page The zero-based page index to retrieve.
+     * @param size The number of items per page.
+     * @return A Page object containing the requested slice of Book entities and metadata.
      */
     public Page<Book> getAllBooks(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -38,7 +40,9 @@ public class BookService {
     /**
      * Searches for books based on a keyword in the title.
      * @param keyword The title snippet to search for.
-     * @return A list of books matching the search criteria.
+     * @param page The zero-based page index to retrieve.
+     * @param size The number of items per page.
+     * @return A Page object containing books matching the search criteria.
      */
     public Page<Book> searchBooks(String keyword, int page, int size) {
         Pageable  pageable = PageRequest.of(page, size);
@@ -46,9 +50,11 @@ public class BookService {
     }
 
     /**
-     * Filters the catalog by a specific book category.
+     * Filters the catalog by a specific book category with pagination support.
      * @param category The category name (e.g., "Fiction", "Science").
-     * @return A list of books belonging to the specified category.
+     * @param page The zero-based page index to retrieve.
+     * @param size The number of items per page.
+     * @return A Page object containing books belonging to the specified category.
      */
     public Page<Book> filterByCategory(String category, int page, int size) {
         Pageable  pageable = PageRequest.of(page, size);

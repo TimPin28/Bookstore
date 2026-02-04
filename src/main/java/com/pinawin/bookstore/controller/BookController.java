@@ -27,9 +27,11 @@ public class BookController {
     }
 
     /**
-     * Retrieves a complete list of all books available in the bookstore.
+     * Retrieves a paginated slice of all books available in the bookstore.
      * Maps to GET /api/books.
-     * @return A list of Book entities.
+     * @param page The zero-based page index to retrieve (defaults to 0).
+     * @param size The number of records per page (defaults to 8).
+     * @return A Page object containing a subset of Book entities and pagination metadata.
      */
     @GetMapping
     public Page<Book> getAllBooks(@RequestParam(defaultValue = "0") int page,
@@ -38,10 +40,12 @@ public class BookController {
     }
 
     /**
-     * Searches for books whose titles contain the specified keyword.
-     * Maps to GET /api/books/search?keyword=...
+     * Searches for books whose titles contain the specified keyword with pagination support.
+     * Maps to GET /api/books/search?keyword=...&page=...&size=...
      * @param keyword The search term provided by the user.
-     * @return A list of Book entities matching the title search.
+     * @param page The zero-based page index to retrieve (defaults to 0).
+     * @param size The number of records per page (defaults to 8).
+     * @return A Page object of Book entities matching the title search.
      */
     @GetMapping("/search")
     public Page<Book> searchBooks(@RequestParam String keyword,
@@ -51,10 +55,12 @@ public class BookController {
     }
 
     /**
-     * Filters the book catalog based on a specific category.
-     * Maps to GET /api/books/category?category=...
+     * Filters the book catalog based on a specific category with pagination support.
+     * Maps to GET /api/books/category?category=...&page=...&size=...
      * @param category The category name to filter by.
-     * @return A list of Book entities belonging to the specified category.
+     * @param page The zero-based page index to retrieve (defaults to 0).
+     * @param size The number of records per page (defaults to 8).
+     * @return A Page object of Book entities belonging to the specified category.
      */
     @GetMapping("/category")
     public Page<Book> byCategory(@RequestParam("category") String category,

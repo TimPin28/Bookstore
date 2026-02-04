@@ -1,6 +1,8 @@
 /**
  * Book Catalog Controller
- * Handles fetching the book list, searching, and filtering by category.
+ * * This module manages the dynamic lifecycle of the book catalog UI, including
+ * paginated data retrieval, real-time title searching, and category filtering.
+ * It synchronizes with the Spring Boot Backend's Pageable responses.
  */
 document.addEventListener("DOMContentLoaded", () => {
     const bookGrid = document.getElementById("bookGrid");
@@ -15,11 +17,13 @@ document.addEventListener("DOMContentLoaded", () => {
     loadBooks(0);
 
     /**
-     * --- 2. Helper: Render Books to UI ---
-     * Dynamically builds the HTML grid from a book array.
-     * @param {Array} books - The array of book objects from the API.
+     * --- 2. UI Renderer: renderPage ---
+     * Processes the Spring Data 'Page' object to build the book grid and
+     * update pagination controls.
+     * @param {Object} pageData - The paginated response containing content and metadata.
      */
     function renderPage(pageData) {
+        // Extract the array of books from the Page object
         const books = pageData.content
         // Clear grid before rendering new items
         bookGrid.innerHTML = ""; 
@@ -59,9 +63,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
             bookGrid.appendChild(card);
         });
+        // Update pagination buttons based on current page metadata
         renderControls(pageData);
     }
 
+    /**
+     * --- 3. API: searchBooks ---
+     * Fetches a paginated slice of books matching a title keyword.
+     * @param {string} keyword - The search term.
+     * @param {number} page - The current page index requested.
+     */
     async function searchBooks(keyword, page) {
         try {
             const response = await fetch(`/api/books/search?keyword=${encodeURIComponent(keyword)}&page=${page}&size=${pageSize}`);
@@ -72,6 +83,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    /**
+     * --- 4. API: filterByCategory ---
+     * Fetches a paginated slice of books within a specific category.
+     * @param {string} category - The category to filter.
+     * @param {number} page - The current page index requested.
+     */
     async function filterByCategory(category, page) {
         try {
             const response = await fetch(`/api/books/category?category=${encodeURIComponent(category)}&page=${page}&size=${pageSize}`);
@@ -82,6 +99,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    /**
+     * --- 5. UI: renderControls ---
+     * Generates 'Previous' and 'Next' buttons and handles their state (disabled/enabled)
+     * using metadata (first/last) provided by Spring Data.
+     * @param {Object} pageData - Metadata containing totalPages and current page info.
+     */
     function renderControls(pageData) {
         let controls = document.getElementById("paginationControls");
 
@@ -109,6 +132,11 @@ document.addEventListener("DOMContentLoaded", () => {
         };
     }
 
+    /**
+     * --- 6. Logic: executeFetch ---
+     * Centralized router that determines which API call to trigger based on
+     * the current state of search and category inputs.
+     */
     function executeFetch() {
         const keyword = searchInput.value.trim();
         const category = categoryInput.value.trim();
@@ -125,8 +153,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /**
-     * --- 3. API Call: Get All Books ---
-     * Standard fetch to retrieve the full catalog.
+     * --- 7. API: loadBooks ---
+     * Retrieves the standard catalog list with pagination.
+     * @param {number} page - Current page index.
      */
     async function loadBooks(page) {
         try {
@@ -138,13 +167,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    /**
-     * --- 4. Event Listener: Title Search ---
-     * Triggers as the user types (real-time).
-     */
+    // --- 8. Listeners for Real-time Interaction ---
+
     searchInput.addEventListener("input", async () => {
         const keyword = searchInput.value.trim();
-        currentPage = 0;
+        currentPage = 0; // Reset pagination on new search query
 
         if (keyword === "") {
             // Revert to full list if input is cleared
@@ -155,13 +182,9 @@ document.addEventListener("DOMContentLoaded", () => {
         searchBooks(keyword, currentPage);
     });
 
-    /**
-     * --- 5. Event Listener: Category Search ---
-     * Filters books based on the category input value.
-     */
     categoryInput.addEventListener("input", async () => {
         const categoryValue = categoryInput.value.trim();
-        currentPage = 0;
+        currentPage = 0; // Reset pagination on new category query
 
         if (categoryValue === "") {
             // Revert to full list if input is cleared
@@ -173,9 +196,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     /**
-     * --- 6. Button: Add To Cart ---
-     * Communicates with CartController.
-     * @param {number} bookId - ID of the selected book.
+     * --- 9. API: addToCart ---
+     * Handles adding items to the user's persistent cart.
+     * @param {number} bookId - Target book ID.
      */
     async function addToCart(bookId) {
         const response = await fetch(`/api/cart/add?bookId=${bookId}`, {
