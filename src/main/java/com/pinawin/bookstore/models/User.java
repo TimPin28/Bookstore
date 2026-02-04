@@ -48,6 +48,9 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private String role = "ROLE_USER";
+
     /**
      * List of historical orders placed by this user.
      * JsonIgnore prevents infinite recursion during API responses.
@@ -69,7 +72,7 @@ public class User implements UserDetails {
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return List.of(new SimpleGrantedAuthority(this.role));
     }
 
     @Override

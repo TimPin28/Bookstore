@@ -34,7 +34,7 @@ public class UserService {
      * @param email The user's email address.
      * @param password The plain-text password from the registration form.
      * @return The saved User entity.
-     * @throws RuntimeException if the email is already registered.
+     * @throws RuntimeException if the email and userName is already registered.
      */
     public User register(String name, String email, String password) {
 
@@ -54,6 +54,7 @@ public class UserService {
 
         User user = new User();
         user.setUserName(name);
+        user.setRole("ROLE_USER");
         user.setEmail(email);
 
         // Hash the password before saving to the database.
