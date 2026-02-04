@@ -3,6 +3,7 @@ package com.pinawin.bookstore.config;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -70,7 +71,7 @@ public class SecurityConfig {
 
                         // 3. PROTECTED ENDPOINTS: Requires at least ROLE_USER
                         .requestMatchers("/profile.html", "/shoppingCart.html").authenticated()
-                        .requestMatchers("/api/cart/**", "/api/checkout/**", "/api/orders/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/cart/**", "/api/checkout/**", "/api/orders/**").authenticated()
 
                         // 4. GLOBAL GUARD: Any other request must be authenticated
                         .anyRequest().authenticated()
