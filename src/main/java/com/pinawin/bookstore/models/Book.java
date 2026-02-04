@@ -2,6 +2,8 @@ package com.pinawin.bookstore.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -47,6 +49,7 @@ public class Book {
     /**
      * The unit price of the book.
      */
+    @DecimalMin(value = "0.0", inclusive = true, message = "Price cannot be negative")
     private BigDecimal price;
 
     /**
@@ -58,6 +61,7 @@ public class Book {
      * The current number of copies available in the inventory.
      * This value is decremented during the checkout process.
      */
+    @Min(value = 0, message = "Stock cannot be less than zero")
     private int stock;
 
     /**

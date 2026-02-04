@@ -5,8 +5,10 @@ import com.pinawin.bookstore.models.Book;
 import com.pinawin.bookstore.models.User;
 import com.pinawin.bookstore.repositories.BookRepository;
 import com.pinawin.bookstore.services.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 /**
  * Administrative Controller restricted to users with ROLE_ADMIN.
@@ -38,9 +40,24 @@ public class AdminController {
      * @return A ResponseEntity containing the successfully persisted Book.
      */
     @PostMapping("/books")
-    public ResponseEntity<Book> addBook(@RequestBody Book book) {
-        // Saves the new book entity to the MySQL database
-        return ResponseEntity.ok(bookRepository.save(book));
+    public ResponseEntity<?> addBook(@RequestBody Book book) {
+        // 1. Validation Logic
+        if (book.getPrice() == null || book.getPrice().compareTo(java.math.BigDecimal.ZERO) < 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Price cannot be negative.");
+        }
+
+        if (book.getStock() < 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Stock cannot be negative.");
+        }
+
+        try {
+            // 2. Persistence
+            Book savedBook = bookRepository.save(book);
+            return ResponseEntity.ok(savedBook); // Returns <Book>
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error saving book: " + e.getMessage()); // Returns <String>
+        }
     }
 
     /**
