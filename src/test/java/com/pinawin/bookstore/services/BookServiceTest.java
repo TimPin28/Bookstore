@@ -9,6 +9,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -30,6 +33,8 @@ public class BookServiceTest {
     private BookService bookService;
 
     private Book sampleBook;
+    private final int page = 0;
+    private final int size = 8;
 
     @BeforeEach
     public void setUp() {
@@ -42,19 +47,22 @@ public class BookServiceTest {
     }
 
     @Test
-    @DisplayName("Should return all books from repository")
+    @DisplayName("Should return a Page of books from repository")
     void testGetAllBooks() {
-        // Arrange: Mock the repository to return a list containing our sample book
-        when(bookRepository.findAll()).thenReturn(List.of(sampleBook));
+        // Arrange: Mock the repository to return a page containing our sample book
+        List<Book> bookList = List.of(sampleBook);
+        Page<Book> bookPage = new PageImpl<>(bookList);
 
-        // Act: Call the service method
-        List<Book> result = bookService.getAllBooks();
+        when(bookRepository.findAll(any(Pageable.class))).thenReturn(bookPage);
 
-        // Assert: Verify the results
+        // Act: Call service with pagination params
+        Page<Book> result = bookService.getAllBooks(page, size);
+
+        // Assert: Access content via result.getContent()
         assertFalse(result.isEmpty());
-        assertEquals(1, result.size());
-        assertEquals("Java Programming", result.getFirst().getTitle());
-        verify(bookRepository, times(1)).findAll();
+        assertEquals(1, result.getTotalElements());
+        assertEquals("Java Programming", result.getContent().getFirst().getTitle());
+        verify(bookRepository, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
@@ -62,14 +70,16 @@ public class BookServiceTest {
     void testSearchBooks() {
         // Arrange
         String keyword = "Java";
-        when(bookRepository.findByTitleContainingIgnoreCase(keyword)).thenReturn(List.of(sampleBook));
+        Page<Book> bookPage = new PageImpl<>(List.of(sampleBook));
+        when(bookRepository.findByTitleContainingIgnoreCase(eq(keyword), any(Pageable.class)))
+                .thenReturn(bookPage);
 
         // Act
-        List<Book> result = bookService.searchBooks(keyword);
+        Page<Book> result = bookService.searchBooks(keyword, page, size);
 
         // Assert
-        assertEquals(1, result.size());
-        assertTrue(result.getFirst().getTitle().contains(keyword));
+        assertEquals(1, result.getContent().size());
+        assertTrue(result.getContent().getFirst().getTitle().contains(keyword));
     }
 
     @Test
@@ -77,29 +87,16 @@ public class BookServiceTest {
     void testFilterByCategory() {
         // Arrange
         String category = "Technology";
-        when(bookRepository.findByCategoryContainingIgnoreCase(category)).thenReturn(List.of(sampleBook));
+        Page<Book> bookPage = new PageImpl<>(List.of(sampleBook));
+        when(bookRepository.findByCategoryContainingIgnoreCase(eq(category), any(Pageable.class)))
+                .thenReturn(bookPage);
 
         // Act
-        List<Book> result = bookService.filterByCategory(category);
+        Page<Book> result = bookService.filterByCategory(category, page, size);
 
         // Assert
-        assertEquals("Technology", result.getFirst().getCategory());
-        verify(bookRepository, atLeastOnce()).findByCategoryContainingIgnoreCase(category);
-    }
-
-    @Test
-    @DisplayName("Should handle search queries with special characters")
-    void testSearch_SpecialCharacters() {
-        // Arrange
-        String query = "Spring & Java!!!";
-        when(bookRepository.findByTitleContainingIgnoreCase(query)).thenReturn(List.of());
-
-        // Act
-        List<Book> results = bookService.searchBooks(query);
-
-        // Assert
-        assertTrue(results.isEmpty());
-        verify(bookRepository, times(1)).findByTitleContainingIgnoreCase(query);
+        assertEquals("Technology", result.getContent().getFirst().getCategory());
+        verify(bookRepository, atLeastOnce()).findByCategoryContainingIgnoreCase(eq(category), any(Pageable.class));
     }
 
     @Test
@@ -107,13 +104,33 @@ public class BookServiceTest {
     void testGetByCategory_CaseInsensitive() {
         // Arrange
         String category = "fiction";
-        when(bookRepository.findByCategoryContainingIgnoreCase("fiction")).thenReturn(List.of(new Book()));
+        Page<Book> bookPage = new PageImpl<>(List.of(new Book()));
+        when(bookRepository.findByCategoryContainingIgnoreCase(eq("fiction"), any(Pageable.class)))
+                .thenReturn(bookPage);
 
         // Act
-        List<Book> results = bookService.filterByCategory(category);
+        Page<Book> result = bookService.filterByCategory(category, page, size);
 
         // Assert
-        assertFalse(results.isEmpty());
-        verify(bookRepository, times(1)).findByCategoryContainingIgnoreCase("fiction");
+        assertFalse(result.isEmpty());
+        verify(bookRepository, times(1)).findByCategoryContainingIgnoreCase(eq("fiction"), any(Pageable.class));
+    }
+
+    @Test
+    @DisplayName("Should return empty Page when no books match search keyword")
+    void testSearchBooks_NoResults() {
+        // Arrange
+        String keyword = "NonExistentBook";
+        Page<Book> emptyPage = new PageImpl<>(List.of()); // Empty list
+
+        when(bookRepository.findByTitleContainingIgnoreCase(eq(keyword), any(Pageable.class)))
+                .thenReturn(emptyPage);
+
+        // Act
+        Page<Book> result = bookService.searchBooks(keyword, 0, 8);
+
+        // Assert
+        assertTrue(result.getContent().isEmpty());
+        assertEquals(0, result.getTotalElements());
     }
 }
