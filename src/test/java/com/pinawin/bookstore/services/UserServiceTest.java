@@ -152,4 +152,39 @@ public class UserServiceTest {
         assertEquals(hashedPw, result.getPassword());
         verify(passwordEncoder, atLeastOnce()).encode(rawPw);
     }
+
+    @Test
+    @DisplayName("Should assign ROLE_USER by default when role parameter is null or empty")
+    void register_defaultRoleAssignment() {
+        // Arrange
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+        when(userRepository.findByuserName(anyString())).thenReturn(Optional.empty());
+        when(passwordEncoder.encode(anyString())).thenReturn("hashed_pw");
+        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArguments()[0]);
+
+        // Act: Test with null role and empty string role
+        User userWithNull = userService.register("timothy", "t1@test.com", "pw", null);
+        User userWithEmpty = userService.register("timothy2", "t2@test.com", "pw", "");
+
+        // Assert
+        assertEquals("ROLE_USER", userWithNull.getRole());
+        assertEquals("ROLE_USER", userWithEmpty.getRole());
+    }
+
+    @Test
+    @DisplayName("Should assign specific role when provided (Admin Registration)")
+    void register_explicitRoleAssignment() {
+        // Arrange
+        String customRole = "ROLE_ADMIN";
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+        when(userRepository.findByuserName(anyString())).thenReturn(Optional.empty());
+        when(passwordEncoder.encode(anyString())).thenReturn("hashed_pw");
+        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArguments()[0]);
+
+        // Act
+        User adminUser = userService.register("adminUser", "admin@test.com", "pw", customRole);
+
+        // Assert
+        assertEquals("ROLE_ADMIN", adminUser.getRole());
+    }
 }
