@@ -65,25 +65,30 @@ public class SecurityConfig {
                         .requestMatchers("/api/books/**", "/api/auth/**").permitAll()
 
                         // 2. ADMIN ENDPOINTS: Strictly restricted to the ADMIN role
-                        // These match your requirement: "Admin page: add register new user and new books"
                         .requestMatchers("/admin.html").hasRole("ADMIN")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
 
                         // 3. PROTECTED ENDPOINTS: Requires at least ROLE_USER
-                        .requestMatchers("/profile.html", "/shoppingCart.html").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/api/cart/**", "/api/checkout/**", "/api/orders/**").authenticated()
+                        .requestMatchers("/profile.html", "/shoppingCart.html").hasRole("USER")
+                        .requestMatchers("/api/cart/**", "/api/checkout/**", "/api/orders/**").hasRole("USER")
 
                         // 4. GLOBAL GUARD: Any other request must be authenticated
                         .anyRequest().authenticated()
                 )
 
                 .exceptionHandling(exception -> exception
-                        // Redirects users with the wrong role (e.g., USER trying to access ADMIN)
+                        // 1. AUTHORIZATION: Logged-in users with the wrong role (e.g., ADMIN -> Cart)
                         .accessDeniedPage("/access-denied.html")
 
-                        // Optional: Redirects unauthenticated users (guests) to login
+                        // 2. AUTHENTICATION: Guests (Unauthenticated)
                         .authenticationEntryPoint((request, response, authException) -> {
-                            response.sendRedirect("/login.html?error=unauthorized");
+                            // API Check: If it's a JS fetch call, send 401 so the alert() works in book.js
+                            if (request.getRequestURI().startsWith("/api/")) {
+                                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            } else {
+                                // Browser Check: If they typed the URL in the bar, send to login
+                                response.sendRedirect("/login.html?error=unauthorized");
+                            }
                         })
                 )
 
