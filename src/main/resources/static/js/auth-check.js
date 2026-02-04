@@ -25,6 +25,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             if(guestSection) guestSection.style.display = "none";
             if(userSection) userSection.style.display = "inline";
 
+            const adminLink = document.getElementById("adminLink");
+            if (adminLink && user.role === "ROLE_ADMIN") {
+                adminLink.style.display = "inline";
+            }
+
             console.log("Logged in as:", user.userName);
         } else {
 
