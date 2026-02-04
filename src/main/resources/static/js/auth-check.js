@@ -21,13 +21,27 @@ document.addEventListener("DOMContentLoaded", async () => {
             // User is authenticated
             const user = await response.json();
 
-            // Logic: Hide login/register containers, show profile/logout containers
+            // Hide Guest view
             if(guestSection) guestSection.style.display = "none";
+
+            // Show the Authenticated container
             if(userSection) userSection.style.display = "inline";
 
+            const cartLink = document.getElementById("cartLink");
+            const profileLink = document.getElementById("profileLink");
             const adminLink = document.getElementById("adminLink");
-            if (adminLink && user.role === "ROLE_ADMIN") {
-                adminLink.style.display = "inline";
+
+            if (user.role === "ROLE_ADMIN") {
+                // ADMIN: Show Admin link, Hide Cart and Profile
+                if (adminLink) adminLink.style.display = "inline";
+                if (cartLink) cartLink.style.display = "none";
+                if (profileLink) profileLink.style.display = "none";
+            }
+            else if (user.role === "ROLE_USER") {
+                // USER: Hide Admin link, Show Cart and Profile
+                if (adminLink) adminLink.style.display = "none";
+                if (cartLink) cartLink.style.display = "inline";
+                if (profileLink) profileLink.style.display = "inline";
             }
 
             console.log("Logged in as:", user.userName);
