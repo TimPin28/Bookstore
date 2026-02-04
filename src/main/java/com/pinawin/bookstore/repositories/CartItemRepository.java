@@ -3,7 +3,9 @@ package com.pinawin.bookstore.repositories;
 import com.pinawin.bookstore.models.Book;
 import com.pinawin.bookstore.models.CartItem;
 import com.pinawin.bookstore.models.User;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +39,8 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
      * Removes all shopping cart items associated with a specific user.
      * @param user the user entity whose cart items should be deleted.
      */
+    @Modifying
+    @Transactional
     void deleteAllByUser(User user);
 }
 

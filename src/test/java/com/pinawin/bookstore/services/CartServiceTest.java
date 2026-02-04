@@ -142,4 +142,17 @@ public class CartServiceTest {
         // Assert
         verify(cartItemRepository, times(1)).save(any(CartItem.class));
     }
+
+    @Test
+    @DisplayName("Should successfully clear all items for a specific user")
+    void testClearCart_Successful() {
+        // Act: Use the testUser from @BeforeEach
+        cartService.clearCart(testUser);
+
+        // Assert: Verify that the exact repository method was called for this specific user
+        verify(cartItemRepository, times(1)).deleteAllByUser(testUser);
+
+        // Extra Guard: Verify we didn't call the general deleteAll method by mistake
+        verify(cartItemRepository, never()).deleteAll();
+    }
 }
